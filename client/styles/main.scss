@@ -1,5 +1,18 @@
+/**
+ * Frameworks
+ */
+@import "bootstrap";
+@import "font-awesome";
+
+/**
+ * Base
+ */
+@import "variables";
 @import "breakpoints";
 @import "mixins";
-@import "variables";
+@import "reset";
 
-@import "main-container";
+/**
+ * Components
+ */
+@import "index";

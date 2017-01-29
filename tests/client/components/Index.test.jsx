@@ -1,10 +1,10 @@
-/*global describe it*/
+/*global describe it sinon*/
 
 /*----------Modules----------*/
 import expect from 'expect';
-// import React from 'react';
+import React from 'react';
 // import ReactDOM from 'react-dom';
-// import TestUtils from 'react-addons-test-utils';
+import TestUtils from 'react-addons-test-utils';
 
 /*----------Redux----------*/
 // import {Provider} from 'react-redux';
@@ -12,9 +12,41 @@ import expect from 'expect';
 
 /*----------Components----------*/
 import {Index} from 'Index';
+import {BarList} from 'BarList';
 
 describe('Index', () => {
   it('should exist', () => {
     expect(Index).toExist();
+  });
+
+  it('should render a search form', () => {
+    let index = TestUtils.renderIntoDocument(<Index />);
+    let form = TestUtils.findRenderedDOMComponentWithTag(index, 'form');
+    let searchBox = TestUtils.findRenderedDOMComponentWithTag(index, 'input');
+    let submitButton = TestUtils.findRenderedDOMComponentWithTag(index, 'button');
+    expect(form).toExist();
+    expect(form.children).toExist();
+    expect(form.children[0].children.length).toBe(2);
+    expect(searchBox).toExist();
+    expect(searchBox.children.length).toBe(0);
+    expect(submitButton).toExist();
+    expect(submitButton.children.length).toBe(0);
+  });
+
+  it('should send a request to the Yelp API when the form is submitted', () => {
+    let index = TestUtils.renderIntoDocument(<Index />);
+    let form = TestUtils.findRenderedDOMComponentWithTag(index, 'form');
+    index.refs.search.value = 'test';
+    let jqueryMock = sinon.mock($).expects('ajax').atLeast(1);
+    TestUtils.Simulate.submit(form);
+    jqueryMock.verify();
+  });
+
+  it('should render a BarList component', () => {
+    let index = TestUtils.renderIntoDocument(<Index />);
+    let barList = TestUtils.scryRenderedComponentsWithType(index, BarList);
+    expect(barList).toExist();
+    expect(barList).toNotBe(undefined);
+    expect(barList.length).toBe(1);
   });
 });

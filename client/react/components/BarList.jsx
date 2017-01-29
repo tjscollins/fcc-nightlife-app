@@ -5,7 +5,7 @@ import React from 'react';
 
 
 /*eslint-disable require-jsdoc*/
-export class Login extends React.Component {
+export class BarList extends React.Component {
   constructor() {
     super();
   }
@@ -18,4 +18,4 @@ export class Login extends React.Component {
   }
 }
 
-export default Login;
+export default BarList;

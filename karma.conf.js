@@ -3,13 +3,14 @@ const webpackConfig = require('./webpack.config.dev.js');
 module.exports = function(config) {
   config.set({
     autowatch: false,
-    browsers: ['Chrome', 'Firefox'],
+    browsers: ['PhantomJS'],
     singleRun: true,
     frameworks: [
       'mocha',
       'sinon',
     ],
     files: [
+      'node_modules/jquery/dist/jquery.min.js',
       'tests/client/**/*.test.jsx',
     ],
     preprocessors: {

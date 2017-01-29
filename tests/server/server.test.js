@@ -1,5 +1,4 @@
-/*global describe it beforeEach done*/
-const expect = require('expect');
+/*global describe it*/
 const request = require('supertest');
 
 const {app} = require('./../../server.js');
@@ -7,17 +6,19 @@ const {app} = require('./../../server.js');
 describe('Server Routes', () => {
   describe('/', () => {
     describe('GET', () => {
-      it('should respond', (done) => {
+      it('should respond 200', (done) => {
         request(app)
           .get('/')
           .send()
-          .expect(302)
+          .expect(200)
           .end((err, res) => {
             if (err)
               return done(err);
             done();
           });
       });
+
+
     });
   });
 });
