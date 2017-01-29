@@ -40,7 +40,7 @@ export class Index extends React.Component {
             </div>
           </form>
         </div>
-        <BarList />
+        <BarList bars={[]} />
       </div>
     );
   }
