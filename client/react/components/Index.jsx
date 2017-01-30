@@ -17,7 +17,7 @@ export class Index extends React.Component {
       method: 'post',
       data: this.refs.search.value,
       success: (res) => console.log(res),
-      failure: (err) => console.log(err),
+      error: (err) => console.log(err),
     };
     $.ajax(request);
   }
@@ -33,9 +33,17 @@ export class Index extends React.Component {
             <i className='fa fa-glass fa-2x' />
           </h2>
           <h4>See which bars are hoppin' tonight and RSVP ahead of time!</h4>
-          <form onSubmit={this.submit.bind(this)} className='form-inline'>
+          <form
+            onSubmit={this
+              .submit
+              .bind(this)}
+            className='form-inline'>
             <div className='form-group'>
-              <input ref='search' className='form-control' type='text' placeholder='Where You At?' />
+              <input
+                ref='search'
+                className='form-control'
+                type='text'
+                placeholder='Where You At?' />
               <button className='btn btn-default' type='submit'>Go</button>
             </div>
           </form>

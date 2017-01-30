@@ -2,7 +2,7 @@
 /*eslint-disable require-jsdoc*/
 
 const path = process.cwd();
-const ClickHandler = require(path + '/server/controllers/clickHandler.server.js');
+const http = require('http');
 
 module.exports = function(app, passport) {
   function isLoggedIn(req, res, next) {
@@ -12,8 +12,6 @@ module.exports = function(app, passport) {
       res.redirect('/login');
     }
   }
-
-  let clickHandler = new ClickHandler();
 
   app
     .route('/')
@@ -40,6 +38,18 @@ module.exports = function(app, passport) {
       res.sendFile(path + '/public/index.html');
     });
 
+  app.route('/api/search').post((req, res) => {
+    //Need to Implement OAuth Authentication w/ Yelp API for this to work
+    let {query} = req.body;
+    console.log('Query: ', query);
+    http.get({
+      host: 'https://api.yelp.com',
+      path: `/v2/search?category_filter=bars&location=${query}`,
+    }, (barData) => {
+      res.send(barData);
+    });
+  });
+
   app
     .route('/api/:id')
     .get(isLoggedIn, function(req, res) {
@@ -56,10 +66,4 @@ module.exports = function(app, passport) {
       successRedirect: '/',
       failureRedirect: '/login',
     }));
-
-  app
-    .route('/api/:id/clicks')
-    .get(isLoggedIn, clickHandler.getClicks)
-    .post(isLoggedIn, clickHandler.addClick)
-    .delete(isLoggedIn, clickHandler.resetClicks);
 };

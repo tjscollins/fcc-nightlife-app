@@ -33,10 +33,15 @@ describe('Index', () => {
     expect(submitButton.children.length).toBe(0);
   });
 
-  it('should send a request to the Yelp API when the form is submitted', () => {
+  it('should POST search data to /search', () => {
     let index = TestUtils.renderIntoDocument(<Index />);
     let form = TestUtils.findRenderedDOMComponentWithTag(index, 'form');
     index.refs.search.value = 'test';
+    let request = {
+      url: '/search',
+      method: 'post',
+      data: index.refs.search.value,
+    };
     let jqueryMock = sinon.mock($).expects('ajax').atLeast(1);
     TestUtils.Simulate.submit(form);
     jqueryMock.verify();
