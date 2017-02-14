@@ -1,9 +1,12 @@
 /*----------Modules----------*/
 import React from 'react';
 import $ from 'jquery';
+import {connect} from 'react-redux';
 
 /*----------Components----------*/
 import BarList from 'BarList';
+
+import {storeBarList} from 'actions';
 
 /*eslint-disable require-jsdoc*/
 export class Index extends React.Component {
@@ -11,14 +14,15 @@ export class Index extends React.Component {
     super();
   }
   submit(e) {
+    let {dispatch} = this.props;
     e.preventDefault();
     let request = {
-      url: '/search',
-      method: 'post',
-      data: this.refs.search.value,
-      success: (res) => console.log(res),
+      url: `/api/search?query=${this.refs.search.value}`,
+      method: 'get',
+      success: (res) => dispatch(storeBarList(JSON.parse(res).response.venues)),
       error: (err) => console.log(err),
     };
+    console.log('Search', this.refs.search.value);
     $.ajax(request);
   }
   render() {
@@ -48,10 +52,12 @@ export class Index extends React.Component {
             </div>
           </form>
         </div>
-        <BarList bars={[]} />
+        <BarList />
       </div>
     );
   }
 }
 
-export default Index;
+export default connect((state) => {
+  return {dispatch: state.dispatch};
+})(Index);

@@ -1,8 +1,8 @@
 /*----------Modules----------*/
 import React from 'react';
+import {connect} from 'react-redux';
 
 /*----------Components----------*/
-
 
 /*eslint-disable require-jsdoc*/
 export class BarList extends React.Component {
@@ -12,17 +12,33 @@ export class BarList extends React.Component {
   listBars() {
     let {bars} = this.props;
     return bars.map((bar, i) => {
+      let [category] = bar
+        .categories
+        .filter((cat) => {
+          return cat.primary;
+        });
+      console.log(category);
+      let iconURL = category ? category.icon.prefix + category.name + category.icon.suffix : '';
       return (
         <div key={`bar-list-${i}`} className='row'>
           <div className='col-xs-12 col-sm-2'>
-            Img
+            <img src={iconURL}/>
           </div>
           <div className='col-xs-12 col-sm-10'>
-            <h4>
-              {bar.name}
-            </h4><br />
+            <div className='row'>
+              <h4 className='col-xs-6'>
+                {bar.name}
+              </h4>
+              <p className='col-xs-3' style={{float: 'left'}}>
+                # Going Tonight
+              </p>
+            </div>
+            <br/>
             <p>
-              {bar.text}
+              {bar
+                .location
+                .formattedAddress
+                .join('\n')}
             </p>
           </div>
         </div>
@@ -34,16 +50,16 @@ export class BarList extends React.Component {
       <div className='container'>
         {this.listBars()}
       </div>
-  );
+    );
   }
 }
 
 BarList.propTypes = {
-  bars: React.PropTypes.array,
+  bars: React.PropTypes.array
 };
 
 BarList.defaultProps = {
-  bars: [],
+  bars: []
 };
 
-export default BarList;
+export default connect((state) => state)(BarList);

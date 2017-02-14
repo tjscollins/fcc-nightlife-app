@@ -2,7 +2,8 @@
 /*eslint-disable require-jsdoc*/
 
 const path = process.cwd();
-const http = require('http');
+const https = require('https');
+const dns = require('dns');
 
 module.exports = function(app, passport) {
   function isLoggedIn(req, res, next) {
@@ -38,17 +39,27 @@ module.exports = function(app, passport) {
       res.sendFile(path + '/public/index.html');
     });
 
-  app.route('/api/search').post((req, res) => {
-    //Need to Implement OAuth Authentication w/ Yelp API for this to work
-    let {query} = req.body;
-    console.log('Query: ', query);
-    http.get({
-      host: 'https://api.yelp.com',
-      path: `/v2/search?category_filter=bars&location=${query}`,
-    }, (barData) => {
-      res.send(barData);
+  app
+    .route('/api/search')
+    .get((req, res) => {
+      //Need to Implement OAuth Authentication w/ Foursquare API for this to work
+      let {query} = req.query;
+      let options = {
+        host: 'api.foursquare.com',
+        path: `/v2/venues/search?v=20161016&near=${query}&intent=browse&query=bar&client_id=GIGPF5SO1YUI1T0VYEHRJVKUHLTF4RW3XLGFJUUG2S2DMW3N&client_secret=NN5314Y4WRO5HVXVKCNIBVOH4NUPGUXRAYIYCK0SNIMRYRJY`,
+      };
+      // dns.lookup(options.host, {hints: 0}, console.log);
+      https.get(options, (barData) => {
+        let responseData = '';
+        barData.setEncoding('utf8');
+        barData.on('data', (data) => {
+          responseData += data;
+        });
+        barData.on('end', () => {
+          res.send(responseData);
+        });
+      });
     });
-  });
 
   app
     .route('/api/:id')
@@ -64,6 +75,6 @@ module.exports = function(app, passport) {
     .route('/auth/github/callback')
     .get(passport.authenticate('github', {
       successRedirect: '/',
-      failureRedirect: '/login',
+      failureRedirect: '/login'
     }));
 };

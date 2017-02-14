@@ -1,12 +1,12 @@
 /*global describe it*/
 const request = require('supertest');
-
+const expect = require('expect');
 const {app} = require('./../../server.js');
 
 describe('Server Routes', () => {
   describe('/', () => {
     describe('GET', () => {
-      it('should respond 200', (done) => {
+      it('should respond with 200', (done) => {
         request(app)
           .get('/')
           .send()
@@ -22,17 +22,16 @@ describe('Server Routes', () => {
 
   describe('/api/search', () => {
     describe('POST', () => {
-      it('should pass queries on to Yelp API and send Yelp data back to client', (done) => {
+      it('should pass queries on to Foursquare API and send Foursquare data back to client', (done) => {
         let query = 'Saipan';
         request(app)
           .post('/api/search')
           .send({query})
           .expect(200)
           .expect((res) => {
-            expect(res).toExist();
-            console.log('Server Response ', res);
+            expect(JSON.parse(res.text).response.venues[0]).toExist();
           }).end((err, res) => {
-            if(err) done(err)
+            if(err) done(err);
             else done();
           });
       });
