@@ -3,7 +3,8 @@
 
 const path = process.cwd();
 const https = require('https');
-const dns = require('dns');
+// const dns = require('dns');
+const Venue = require('../models/venue');
 
 module.exports = function(app, passport) {
   function isLoggedIn(req, res, next) {
@@ -58,6 +59,38 @@ module.exports = function(app, passport) {
         barData.on('end', () => {
           res.send(responseData);
         });
+      });
+    });
+
+  app
+    .route('/api/headcount:foursquareId')
+    .get((req, res) => {
+      let {foursquareId} = req.params;
+      // console.log('GET /api/headcount:foursquareId', foursquareId);
+      Venue
+        .findOne({foursquareId})
+        .then((venue) => {
+          // console.log('Found venue', venue);
+          let count = 0;
+          let today = new Date();
+          let headcount = venue.headcount.filter((entry) => {
+            if(entry.getDate() == today.getDate() && entry.getMonth() == today.getMonth()) {
+              count++;
+              return true;
+            } else {
+              return false;
+            }
+          });
+          // console.log('headcount', headcount);
+          venue.update({$set: {headcount}});
+          res
+            .send({headcount: count});
+      }).catch((error) => console.log);
+    })
+    .post((req, res) => {
+      Venue.findOne({id}).then((venue) => {
+        venue.headcount.push(new Date);
+        venue.save();
       });
     });
 
