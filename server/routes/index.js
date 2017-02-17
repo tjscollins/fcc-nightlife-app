@@ -47,7 +47,7 @@ module.exports = function(app, passport) {
       let {query} = req.query;
       let options = {
         host: 'api.foursquare.com',
-        path: `/v2/venues/search?v=20161016&near=${query}&intent=browse&query=bar&client_id=GIGPF5SO1YUI1T0VYEHRJVKUHLTF4RW3XLGFJUUG2S2DMW3N&client_secret=NN5314Y4WRO5HVXVKCNIBVOH4NUPGUXRAYIYCK0SNIMRYRJY`,
+        path: `/v2/venues/search?v=20161016&near=${query}&intent=browse&query=bar&client_id=GIGPF5SO1YUI1T0VYEHRJVKUHLTF4RW3XLGFJUUG2S2DMW3N&client_secret=NN5314Y4WRO5HVXVKCNIBVOH4NUPGUXRAYIYCK0SNIMRYRJY`
       };
       // dns.lookup(options.host, {hints: 0}, console.log);
       https.get(options, (barData) => {
@@ -73,25 +73,35 @@ module.exports = function(app, passport) {
           // console.log('Found venue', venue);
           let count = 0;
           let today = new Date();
-          let headcount = venue.headcount.filter((entry) => {
-            if(entry.getDate() == today.getDate() && entry.getMonth() == today.getMonth()) {
-              count++;
-              return true;
-            } else {
-              return false;
-            }
-          });
+          let headcount = venue
+            .headcount
+            .filter((entry) => {
+              if (entry.getDate() === today.getDate() && entry.getMonth() === today.getMonth() && entry.getYear() === today.getYear()) {
+                count++;
+                return true;
+              } else {
+                return false;
+              }
+            });
           // console.log('headcount', headcount);
-          venue.update({$set: {headcount}});
-          res
-            .send({headcount: count});
-      }).catch((error) => console.log);
+          venue.update({$set: {
+              headcount,
+            }});
+          res.send({headcount: count});
+        })
+        .catch((error) => console.log);
     })
     .post((req, res) => {
-      Venue.findOne({id}).then((venue) => {
-        venue.headcount.push(new Date);
-        venue.save();
-      });
+      let {foursquareId} = req.params;
+      Venue
+        .findOne({foursquareId})
+        .then((venue) => {
+          venue
+            .headcount
+            .push(new Date);
+          venue.save();
+          res.send({headcount: venue.headcount.length});
+        });
     });
 
   app

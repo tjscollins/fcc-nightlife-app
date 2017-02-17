@@ -17,6 +17,8 @@ const venues = [
     foursquareId: '2',
     headcount: [
       new Date('2016', '01', '01'),
+      new Date('2016', '01', '02'),
+      new Date('2016', '01', '03'),
     ],
   },
 ];

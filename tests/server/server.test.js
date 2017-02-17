@@ -5,9 +5,6 @@ const expect = require('expect');
 const {app} = require('./../../server.js');
 const {populateServer} = require('./seed.js');
 
-const mongoose = require('mongoose');
-const Venue = require('../../server/models/venue');
-
 beforeEach(populateServer);
 
 describe('Server Routes', () => {
@@ -51,9 +48,10 @@ describe('Server Routes', () => {
   describe('/api/headcount:id', () => {
     describe('GET', () => {
       it('should return headcounts from MongoDB for a list of locations', (done) => {
-        let id = '1';
+        let foursquareId = '1';
+
         request(app)
-          .get('/api/headcount' + id)
+          .get('/api/headcount' + foursquareId)
           .send()
           .expect(200)
           .expect((res) => {
@@ -72,41 +70,42 @@ describe('Server Routes', () => {
       });
 
       it('should clear old entries from headcounts', (done) => {
-        let id = '2';
-        Venue
-          .find({foursquareId: id})
-          .then((venue) => {
-            expect(venue.headcount.length).toBe(1);
-          })
-          .catch((err) => {
-            throw err;
-          });
+        let foursquareId = '2';
 
         request(app)
-          .get('/api/headcount' + id)
+          .get('/api/headcount' + foursquareId)
           .send()
           .expect(200)
           .expect((res) => {
             let {headcount} = res.body;
-            // expect(headcount).toExist();
             expect(headcount).toNotBe(undefined);
             expect(headcount).toBe(0);
-
-            Venue
-              .find({foursquareId: id})
-              .then((venue) => {
-                console.log('venue', venue);
-                expect(venue.headcount.length).toBe(0);
-              })
-              .catch((err) => {
-                throw err;
-              });
           })
           .end((err, res) => {
             if (err) done(err);
             else done();
             }
           );
+      });
+    });
+
+    describe('POST', () => {
+      it('should add a new Date object to the headcount array', (done) => {
+        let foursquareId = '1';
+
+        request(app)
+          .post('/api/headcount' + foursquareId)
+          .send()
+          .expect(200)
+          .expect((res) => {
+            let {headcount} = res.body;
+            expect(headcount).toExist();
+            expect(headcount).toNotBe(undefined);
+            expect(headcount).toBe(3);
+          }).end((err, res) => {
+            if (err) done(err);
+            else done();
+          });
       });
     });
   });
