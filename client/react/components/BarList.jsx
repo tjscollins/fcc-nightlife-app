@@ -58,7 +58,7 @@ export class BarList extends React.Component {
   }
   render() {
     return (
-      <div className='container'>
+      <div className='container barlist'>
         {this.listBars()}
       </div>
     );

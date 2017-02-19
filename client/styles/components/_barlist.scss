@@ -1,0 +1,18 @@
+.barlist {
+  margin-top: 10px;
+}
+
+.bar-listing {
+  &:hover {
+    border-top: 1px solid white;
+    border-left: 1px solid #333;
+    border-right: 1px solid #333;
+    border-bottom: 1px solid #333;
+    box-shadow: 0 0 10px 5spx rgba(0,0,0,0.2);
+    border-radius: 5px;
+    padding: 4px;
+  }
+
+  margin-bottom: 5px;
+  padding: 5px
+}
