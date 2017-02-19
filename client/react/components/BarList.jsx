@@ -12,25 +12,14 @@ export class BarList extends React.Component {
     super();
   }
   listBars() {
-    let {bars, dispatch} = this.props;
+    let {bars, photos, dispatch} = this.props;
     return bars.map((bar, i) => {
-      // let [category] = bar
-      //   .categories
-      //   .filter((cat) => {
-      //     return cat.primary;
-      //   });
       // console.log(bar);
-      let photos = {};
-      $.get(`/api/search/photos${bar.id}`, (data) => {
-        photos = JSON.parse(data);
-        console.log('callback photos: ', photos);
-        // dispatch(actions.)
-      });
       // console.log('main call photos: ', photos);
       return (
         <div key={`bar-list-${i}`} className='row'>
           <div className='col-xs-12 col-sm-2'>
-            <img />
+            {this.renderPhotos(bar.id)}
           </div>
           <div className='col-xs-12 col-sm-10'>
             <div className='row'>
@@ -53,6 +42,18 @@ export class BarList extends React.Component {
       );
     });
   }
+  renderPhotos(id) {
+    let {items, count} = this.props.photos[id];
+    let {prefix, suffix} = items[0];
+    // for (let photo of items) {
+    //   console.log('photo of items, ', photo);
+    // }
+    console.log(items[0]);
+    return (
+      // <div />
+      <img src={prefix + '200x200' + suffix} />
+    );
+  }
   render() {
     return (
       <div className='container'>
@@ -64,6 +65,8 @@ export class BarList extends React.Component {
 
 BarList.propTypes = {
   bars: React.PropTypes.array,
+  dispatch: React.PropTypes.func,
+  photos: React.PropTypes.object,
 };
 
 BarList.defaultProps = {
