@@ -46,7 +46,7 @@ module.exports = function(app, passport) {
       let {query} = req.query;
       let options = {
         host: 'api.foursquare.com',
-        path: `/v2/venues/search?v=20170101&near=${query}&intent=browse&query=bar&client_id=GIGPF5SO1YUI1T0VYEHRJVKUHLTF4RW3XLGFJUUG2S2DMW3N&client_secret=NN5314Y4WRO5HVXVKCNIBVOH4NUPGUXRAYIYCK0SNIMRYRJY`
+        path: `/v2/venues/search?v=20170101&near=${encodeURI(query)}&intent=browse&query=bar&client_id=GIGPF5SO1YUI1T0VYEHRJVKUHLTF4RW3XLGFJUUG2S2DMW3N&client_secret=NN5314Y4WRO5HVXVKCNIBVOH4NUPGUXRAYIYCK0SNIMRYRJY`
       };
       // dns.lookup(options.host, {hints: 0}, console.log);
       https.get(options, (barData) => {

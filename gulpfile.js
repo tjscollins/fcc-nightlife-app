@@ -43,6 +43,7 @@ const FONTS = {
   in: [
     CLIENT + 'static/fonts/*.*',
     'node_modules/font-awesome/fonts/*.*',
+    'node_modules/bootstrap-sass/assets/fonts/**/*.*',
   ],
   out: DIST + 'fonts/',
 };

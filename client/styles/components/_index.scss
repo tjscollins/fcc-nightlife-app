@@ -1,4 +1,13 @@
 .title-box {
   text-align: center;
   font-family: sans-serif;
+  padding: 10px;
+}
+
+form.form-inline {
+  margin-top: 25px;
+  // width: 50vw;
+  input {
+    width: 45vw;
+  }
 }

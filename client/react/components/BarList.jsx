@@ -4,11 +4,57 @@ import {connect} from 'react-redux';
 
 /*----------Components----------*/
 
-
 /*eslint-disable require-jsdoc*/
 export class BarList extends React.Component {
   constructor() {
     super();
+  }
+  carousel(id) {
+    try {
+      let {items} = this.props.photos[id];
+      let carousel = items.length > 0;
+      let pics = items.map((pic, i) => {
+        if (i > 9) {
+          return (<div />);
+        }
+        return (
+          <div className={i === 0
+            ? 'item active'
+          : 'item'}>
+            <img src={pic.prefix + '300x200' + pic.suffix} />
+          </div>
+        );
+      });
+      let wrapper = (
+        <div id={'carousel-' + id} className='carousel slide' data-ride='carousel'>
+          <div className='carousel-inner' role='listbox'>
+            {pics}
+          </div>
+
+          <a
+            className='left carousel-control'
+            href={'#carousel-' + id}
+            role='button'
+            data-slide='prev'>
+            <span className='glyphicon glyphicon-chevron-left' aria-hidden='true' />
+            <span className='sr-only'>Previous</span>
+          </a>
+          <a
+            className='right carousel-control'
+            href={'#carousel-' + id}
+            role='button'
+            data-slide='next'>
+            <span className='glyphicon glyphicon-chevron-right' aria-hidden='true' />
+            <span className='sr-only'>Next</span>
+          </a>
+        </div>
+      );
+      return carousel
+        ? wrapper
+        : <div />;
+    } catch (e) {
+      return;
+    }
   }
   listBars() {
     let {bars, photos, dispatch} = this.props;
@@ -16,18 +62,20 @@ export class BarList extends React.Component {
       return (
         <div key={`bar-list-${i}`} className='row bar-listing'>
           <div className='col-xs-12 col-sm-4'>
-            {this.renderPhotos(bar.id)}
+            {this.carousel(bar.id)}
           </div>
           <div className='col-xs-12 col-sm-8'>
             <div className='row'>
               <h4 className='col-xs-6'>
                 {bar.name}
               </h4>
-              <p className='col-xs-6' style={{float: 'left'}}>
+              <p className='col-xs-6' style={{
+                float: 'left'
+              }}>
                 Going
               </p>
             </div>
-            <br />
+            <br/>
             <p>
               {bar
                 .location
@@ -41,18 +89,16 @@ export class BarList extends React.Component {
   }
   renderPhotos(id) {
     /*eslint-disable no-var*/
-    if(this.props.photos[id]) {
+    if (this.props.photos[id]) {
       var {items, count} = this.props.photos[id];
     } else {
       var count = 0;
     }
     if (count > 0) {
       let {prefix, suffix} = items[0];
-      return (
-        <img src={prefix + '300x200' + suffix} />
-      );
+      return (<img src={prefix + '300x200' + suffix}/>);
     } else {
-      return <div />;
+      return <div/>;
     }
     /*eslint-enable no-var*/
   }
@@ -68,11 +114,11 @@ export class BarList extends React.Component {
 BarList.propTypes = {
   bars: React.PropTypes.array,
   dispatch: React.PropTypes.func,
-  photos: React.PropTypes.object,
+  photos: React.PropTypes.object
 };
 
 BarList.defaultProps = {
-  bars: [],
+  bars: []
 };
 
 export default connect((state) => state)(BarList);
