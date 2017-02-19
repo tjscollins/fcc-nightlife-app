@@ -3,7 +3,6 @@
 
 const path = process.cwd();
 const https = require('https');
-// const dns = require('dns');
 const Venue = require('../models/venue');
 
 module.exports = function(app, passport) {
@@ -47,7 +46,7 @@ module.exports = function(app, passport) {
       let {query} = req.query;
       let options = {
         host: 'api.foursquare.com',
-        path: `/v2/venues/search?v=20161016&near=${query}&intent=browse&query=bar&client_id=GIGPF5SO1YUI1T0VYEHRJVKUHLTF4RW3XLGFJUUG2S2DMW3N&client_secret=NN5314Y4WRO5HVXVKCNIBVOH4NUPGUXRAYIYCK0SNIMRYRJY`
+        path: `/v2/venues/search?v=20170101&near=${query}&intent=browse&query=bar&client_id=GIGPF5SO1YUI1T0VYEHRJVKUHLTF4RW3XLGFJUUG2S2DMW3N&client_secret=NN5314Y4WRO5HVXVKCNIBVOH4NUPGUXRAYIYCK0SNIMRYRJY`
       };
       // dns.lookup(options.host, {hints: 0}, console.log);
       https.get(options, (barData) => {
@@ -63,14 +62,32 @@ module.exports = function(app, passport) {
     });
 
   app
+    .route('/api/search/photos:id')
+    .get((req, res) => {
+      let {id} = req.params;
+      let options = {
+        host: 'api.foursquare.com',
+        path: `/v2/venues/${id}/photos?client_id=GIGPF5SO1YUI1T0VYEHRJVKUHLTF4RW3XLGFJUUG2S2DMW3N&client_secret=NN5314Y4WRO5HVXVKCNIBVOH4NUPGUXRAYIYCK0SNIMRYRJY&v=20170101`
+      };
+      https.get(options, (response) => {
+        let responseData = '';
+        response.setEncoding('utf8');
+        response.on('data', (data) => {
+          responseData += data;
+        });
+        response.on('end', () => {
+          res.send(responseData);
+        });
+      });
+    });
+
+  app
     .route('/api/headcount:foursquareId')
     .get((req, res) => {
       let {foursquareId} = req.params;
-      // console.log('GET /api/headcount:foursquareId', foursquareId);
       Venue
         .findOne({foursquareId})
         .then((venue) => {
-          // console.log('Found venue', venue);
           let count = 0;
           let today = new Date();
           let headcount = venue
@@ -83,9 +100,8 @@ module.exports = function(app, passport) {
                 return false;
               }
             });
-          // console.log('headcount', headcount);
           venue.update({$set: {
-              headcount,
+              headcount
             }});
           res.send({headcount: count});
         })

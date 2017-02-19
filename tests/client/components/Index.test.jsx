@@ -7,11 +7,11 @@ import React from 'react';
 import TestUtils from 'react-addons-test-utils';
 
 /*----------Redux----------*/
-// import {Provider} from 'react-redux';
-// import {configure} from 'configureStore';
+import {Provider} from 'react-redux';
+import configure from 'configureStore';
 
 /*----------Components----------*/
-import {Index} from 'Index';
+import Index from 'Index';
 import {BarList} from 'BarList';
 
 describe('Index', () => {
@@ -20,7 +20,11 @@ describe('Index', () => {
   });
 
   it('should render a search form', () => {
-    let index = TestUtils.renderIntoDocument(<Index />);
+    let index = TestUtils.renderIntoDocument(
+      <Provider store={configure({})}>
+        <Index />
+      </Provider>
+    );
     let form = TestUtils.findRenderedDOMComponentWithTag(index, 'form');
     let searchBox = TestUtils.findRenderedDOMComponentWithTag(index, 'input');
     let submitButton = TestUtils.findRenderedDOMComponentWithTag(index, 'button');
@@ -34,21 +38,23 @@ describe('Index', () => {
   });
 
   it('should POST search data to /search', () => {
-    let index = TestUtils.renderIntoDocument(<Index />);
+    let index = TestUtils.renderIntoDocument(
+      <Provider store={configure({})}>
+        <Index />
+      </Provider>
+    );
     let form = TestUtils.findRenderedDOMComponentWithTag(index, 'form');
-    index.refs.search.value = 'test';
-    let request = {
-      url: '/search',
-      method: 'post',
-      data: index.refs.search.value,
-    };
     let jqueryMock = sinon.mock($).expects('ajax').atLeast(1);
     TestUtils.Simulate.submit(form);
     jqueryMock.verify();
   });
 
   it('should render a BarList component', () => {
-    let index = TestUtils.renderIntoDocument(<Index />);
+    let index = TestUtils.renderIntoDocument(
+      <Provider store={configure({})}>
+        <Index />
+      </Provider>
+    );
     let barList = TestUtils.scryRenderedComponentsWithType(index, BarList);
     expect(barList).toExist();
     expect(barList).toNotBe(undefined);

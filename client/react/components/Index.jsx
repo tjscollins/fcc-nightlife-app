@@ -22,7 +22,7 @@ export class Index extends React.Component {
       success: (res) => dispatch(storeBarList(JSON.parse(res).response.venues)),
       error: (err) => console.log(err),
     };
-    console.log('Search', this.refs.search.value);
+    // console.log('Search', this.refs.search.value);
     $.ajax(request);
   }
   render() {

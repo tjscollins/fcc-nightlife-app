@@ -12,9 +12,11 @@ module.exports = function(config) {
     files: [
       'node_modules/jquery/dist/jquery.min.js',
       'tests/client/**/*.test.jsx',
+      'tests/client/**/*.test.js',
     ],
     preprocessors: {
       'tests/client/**/*.test.jsx': ['webpack', 'sourcemap'],
+      'tests/client/**/*.test.js': ['webpack', 'sourcemap'],
     },
     reporters: ['mocha'],
     client: {
