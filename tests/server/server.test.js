@@ -3,7 +3,7 @@ const request = require('supertest');
 const expect = require('expect');
 
 const {app} = require('./../../server.js');
-const {populateServer} = require('./seed.js');
+const {users, populateServer} = require('./seed.js');
 
 beforeEach(populateServer);
 
@@ -45,7 +45,7 @@ describe('Server Routes', () => {
     });
   });
 
-  describe('/api/headcount:id', () => {
+  describe('/api/headcount:foursquareId', () => {
     describe('GET', () => {
       it('should return headcounts from MongoDB for a list of locations', (done) => {
         let foursquareId = '1';
@@ -61,10 +61,8 @@ describe('Server Routes', () => {
             expect(headcount).toBe(2);
           })
           .end((err, res) => {
-            if (err)
-              done(err);
-            else
-              done();
+            if (err) done(err);
+            else done();
             }
           );
       });
@@ -90,18 +88,36 @@ describe('Server Routes', () => {
     });
 
     describe('POST', () => {
-      it('should add a new Date object to the headcount array', (done) => {
+      it('should add [id, Date] entry to the headcount array if there is no entry for [id]', (done) => {
         let foursquareId = '1';
 
         request(app)
           .post('/api/headcount' + foursquareId)
-          .send()
+          .send({_id: '1234'})
           .expect(200)
           .expect((res) => {
             let {headcount} = res.body;
             expect(headcount).toExist();
             expect(headcount).toNotBe(undefined);
             expect(headcount).toBe(3);
+          }).end((err, res) => {
+            if (err) done(err);
+            else done();
+          });
+      });
+
+      it('should remove [id, Date] entry to the headcount array if there is an existing entry for [id]', (done) => {
+        let foursquareId = '1';
+
+        request(app)
+          .post('/api/headcount' + foursquareId)
+          .send({_id: users[0].twitter._id})
+          .expect(200)
+          .expect((res) => {
+            let {headcount} = res.body;
+            expect(headcount).toExist();
+            expect(headcount).toNotBe(undefined);
+            expect(headcount).toBe(1);
           }).end((err, res) => {
             if (err) done(err);
             else done();

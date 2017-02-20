@@ -1,5 +1,13 @@
-const reducer = (state = {bars: [], photos: {}}, action) => {
+const reducer = (state = {bars: [], photos: {}, headcounts: {}}, action) => {
   switch(action.type) {
+    case 'STORE_HEADCOUNTS':
+      return {
+        ...state,
+        headcounts: {
+          ...state.headcounts,
+          [action.foursquareId]: action.count,
+        },
+      };
     case 'STORE_BAR_LIST':
       return {
         ...state,

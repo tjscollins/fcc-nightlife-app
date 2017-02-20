@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 
 const Venue = new Schema({
 	foursquareId: String,
-	headcount: [Date],
+	headcount: [[String, Date]],
 });
 
 module.exports = mongoose.model('Venue', Venue);

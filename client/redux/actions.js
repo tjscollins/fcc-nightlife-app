@@ -6,7 +6,12 @@ const storePhotos = (id, photos) => {
   return {type: 'STORE_PHOTOS', id, photos};
 };
 
+const storeHeadcounts = (foursquareId, count) => {
+  return {type: 'STORE_HEADCOUNTS', foursquareId, count};
+};
+
 module.exports = {
   storeBarList,
+  storeHeadcounts,
   storePhotos,
 };

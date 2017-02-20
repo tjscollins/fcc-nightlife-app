@@ -14,7 +14,7 @@ import RouteContainer from 'RouteContainer';
 import Profile from 'Profile';
 
 
-const store = configureStore({bars: [], photos: {}});
+const store = configureStore({bars: [], photos: {}, headcounts: {}, user: {}});
 
 /**
  * Component Class to Route within SPA

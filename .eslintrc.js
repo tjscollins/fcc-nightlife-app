@@ -24,7 +24,8 @@ module.exports = {
     "max-len": ["error", 150],
     "no-unused-vars": "warn",
     "react/jsx-no-bind": "off",
-    "spaced-comment": "off"
+    "react/jsx-space-before-closing":"off",
+    "spaced-comment": "off",
   },
   "settings": {
   }

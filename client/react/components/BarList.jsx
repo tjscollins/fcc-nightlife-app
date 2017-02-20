@@ -4,6 +4,8 @@ import {connect} from 'react-redux';
 
 /*----------Components----------*/
 
+import * as actions from 'actions';
+
 /*eslint-disable require-jsdoc*/
 export class BarList extends React.Component {
   constructor() {
@@ -15,7 +17,7 @@ export class BarList extends React.Component {
       let carousel = items.length > 0;
       let pics = items.map((pic, i) => {
         if (i > 9) {
-          return (<div />);
+          return (<div/>);
         }
         return (
           <div className={i === 0
@@ -36,7 +38,7 @@ export class BarList extends React.Component {
             href={'#carousel-' + id}
             role='button'
             data-slide='prev'>
-            <span className='glyphicon glyphicon-chevron-left' aria-hidden='true' />
+            <span className='glyphicon glyphicon-chevron-left' aria-hidden='true'/>
             <span className='sr-only'>Previous</span>
           </a>
           <a
@@ -57,7 +59,22 @@ export class BarList extends React.Component {
     }
   }
   listBars() {
-    let {bars, photos, dispatch} = this.props;
+    let {bars, photos, dispatch, headcounts} = this.props;
+    bars.map((bar) => {
+      if(headcounts[bar.id] === undefined) {
+        let request = {
+          url: `/api/headcount${bar.id}`,
+          method: 'GET',
+        };
+        $.ajax(request)
+          .done((res) => {
+            dispatch(actions.storeHeadcounts(bar.id, res.headcount));
+          })
+          .fail((err) => {
+            console.error(err);
+          });
+      }
+    });
     return bars.map((bar, i) => {
       return (
         <div key={`bar-list-${i}`} className='row bar-listing'>
@@ -69,13 +86,19 @@ export class BarList extends React.Component {
               <h4 className='col-xs-6'>
                 {bar.name}
               </h4>
-              <p className='col-xs-6' style={{
-                float: 'left'
-              }}>
-                Going
-              </p>
+              <div
+                className='col-xs-6'
+                style={{
+                  float: 'left'
+                }}>
+                <button
+                  onClick={this
+                    .toggleMe
+                    .bind(this, bar.id)}
+                  className='attending'>{headcounts[bar.id] + ' Going Tonight'}</button>
+              </div>
             </div>
-            <br/>
+            <br />
             <p>
               {bar
                 .location
@@ -96,11 +119,33 @@ export class BarList extends React.Component {
     }
     if (count > 0) {
       let {prefix, suffix} = items[0];
-      return (<img src={prefix + '300x200' + suffix}/>);
+      return (<img src={prefix + '300x200' + suffix} />);
     } else {
-      return <div/>;
+      return <div />;
     }
     /*eslint-enable no-var*/
+  }
+  toggleMe(foursquareId) {
+    let {dispatch, user} = this.props;
+    if (!user.auth) {
+      $.get('/auth/twitter');
+    }
+    let request = {
+      url: `/api/headcount${foursquareId}`,
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      dataType: 'json',
+      data: JSON.stringify({_id: user.id}),
+    };
+    console.log('POST data: ', request.data);
+    $
+      .ajax(request)
+      .done((res) => {
+        console.log('toggleMe res: ', res);
+        dispatch(actions.storeHeadcounts(foursquareId, res.headcount));
+      });
   }
   render() {
     return (
@@ -114,11 +159,13 @@ export class BarList extends React.Component {
 BarList.propTypes = {
   bars: React.PropTypes.array,
   dispatch: React.PropTypes.func,
-  photos: React.PropTypes.object
+  photos: React.PropTypes.object,
+  headcounts: React.PropTypes.object,
+  user: React.PropTypes.object,
 };
 
 BarList.defaultProps = {
-  bars: []
+  bars: [],
 };
 
 export default connect((state) => state)(BarList);
