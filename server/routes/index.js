@@ -46,7 +46,7 @@ module.exports = function(app, passport) {
       let {query} = req.query;
       let options = {
         host: 'api.foursquare.com',
-        path: `/v2/venues/search?v=20170101&near=${encodeURI(query)}&intent=browse&query=bar&client_id=GIGPF5SO1YUI1T0VYEHRJVKUHLTF4RW3XLGFJUUG2S2DMW3N&client_secret=NN5314Y4WRO5HVXVKCNIBVOH4NUPGUXRAYIYCK0SNIMRYRJY`,
+        path: `/v2/venues/search?v=20170101&near=${encodeURI(query)}&intent=browse&query=bar&client_id=GIGPF5SO1YUI1T0VYEHRJVKUHLTF4RW3XLGFJUUG2S2DMW3N&client_secret=NN5314Y4WRO5HVXVKCNIBVOH4NUPGUXRAYIYCK0SNIMRYRJY`
       };
       // dns.lookup(options.host, {hints: 0}, console.log);
       https.get(options, (barData) => {
@@ -67,7 +67,7 @@ module.exports = function(app, passport) {
       let {id} = req.params;
       let options = {
         host: 'api.foursquare.com',
-        path: `/v2/venues/${id}/photos?client_id=GIGPF5SO1YUI1T0VYEHRJVKUHLTF4RW3XLGFJUUG2S2DMW3N&client_secret=NN5314Y4WRO5HVXVKCNIBVOH4NUPGUXRAYIYCK0SNIMRYRJY&v=20170101`,
+        path: `/v2/venues/${id}/photos?client_id=GIGPF5SO1YUI1T0VYEHRJVKUHLTF4RW3XLGFJUUG2S2DMW3N&client_secret=NN5314Y4WRO5HVXVKCNIBVOH4NUPGUXRAYIYCK0SNIMRYRJY&v=20170101`
       };
       https.get(options, (response) => {
         let responseData = '';
@@ -88,7 +88,7 @@ module.exports = function(app, passport) {
       Venue
         .findOne({foursquareId})
         .then((venue) => {
-          if(!venue) {
+          if (!venue) {
             Venue.create({foursquareId, headcount: []});
             res.send({headcount: 0});
           } else {
@@ -100,7 +100,7 @@ module.exports = function(app, passport) {
                 return date.getDate() === today.getDate() && date.getMonth() === today.getMonth() && date.getYear() === today.getYear();
               });
             venue.update({$set: {
-                headcount,
+                headcount
               }});
             res.send({headcount: headcount.length});
           }
@@ -113,10 +113,12 @@ module.exports = function(app, passport) {
       Venue
         .findOne({foursquareId})
         .then((venue) => {
-          let headcount = venue.headcount.filter((entry, i) => {
-            return entry[0] !== _id;
-          });
-          if(headcount.length === venue.headcount.length) {
+          let headcount = venue
+            .headcount
+            .filter((entry, i) => {
+              return entry[0] !== _id;
+            });
+          if (headcount.length === venue.headcount.length) {
             venue
               .headcount
               .push([_id, new Date]);
@@ -129,9 +131,10 @@ module.exports = function(app, passport) {
     });
 
   app
-    .route('/api/:id')
+    .route('/api/me')
     .get(isLoggedIn, function(req, res) {
-      res.json(req.user.github);
+      // console.log('/api/me', req.user);
+      res.json(req.user);
     });
 
   app
@@ -145,14 +148,8 @@ module.exports = function(app, passport) {
       failureRedirect: '/',
     }));
 
-  // app
-  //   .route('/auth/github')
-  //   .get(passport.authenticate('github'));
+  // app   .route('/auth/github')   .get(passport.authenticate('github'));
   //
-  // app
-  //   .route('/auth/github/callback')
-  //   .get(passport.authenticate('github', {
-  //     successRedirect: '/',
-  //     failureRedirect: '/login',
-  //   }));
+  // app   .route('/auth/github/callback')   .get(passport.authenticate('github',
+  // {     successRedirect: '/',     failureRedirect: '/login',   }));
 };

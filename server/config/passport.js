@@ -16,8 +16,8 @@ module.exports = function (passport) {
 	});
 
 	passport.use(new TwitterStrategy({
-		consumerKey: configAuth.twitterAuth.clientID,
-		consumerSecret: configAuth.twitterAuth.clientSecret,
+		consumerKey: configAuth.twitterAuth.consumerKey,
+		consumerSecret: configAuth.twitterAuth.consumerSecret,
 		callbackURL: configAuth.twitterAuth.callbackURL,
 	},
 	function (token, refreshToken, profile, done) {
@@ -31,9 +31,9 @@ module.exports = function (passport) {
 					return done(null, user);
 				} else {
 					var newUser = new User();
-
+					// console.log(profile);
 					newUser.twitter.id = profile.id;
-					newUser.twitter.username = profile.username;
+					newUser.twitter.displayName = profile.screen_name;
 
 					newUser.save(function (err) {
 						if (err) {

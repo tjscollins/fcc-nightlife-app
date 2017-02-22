@@ -128,7 +128,11 @@ export class BarList extends React.Component {
   toggleMe(foursquareId) {
     let {dispatch, user} = this.props;
     if (!user.auth) {
-      $.get('/auth/twitter');
+      $.get('/auth/twitter').done(() => {
+        $.get('/api/me').done((user) => {
+          dispatch(actions.loginUser(user));
+        });
+      });
     }
     let request = {
       url: `/api/headcount${foursquareId}`,
@@ -137,7 +141,7 @@ export class BarList extends React.Component {
         'Content-type': 'application/json',
       },
       dataType: 'json',
-      data: JSON.stringify({_id: user.id}),
+      data: JSON.stringify({_id: user._id}),
     };
     console.log('POST data: ', request.data);
     $
