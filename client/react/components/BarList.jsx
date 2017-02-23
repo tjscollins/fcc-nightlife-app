@@ -22,13 +22,17 @@ export class BarList extends React.Component {
         return (
           <div className={i === 0
             ? 'item active'
-          : 'item'}>
-            <img src={pic.prefix + '300x200' + pic.suffix} />
+            : 'item'}>
+            <img src={pic.prefix + '300x200' + pic.suffix}/>
           </div>
         );
       });
       let wrapper = (
-        <div key={id} id={'carousel-' + id} className='carousel slide' data-ride='carousel'>
+        <div
+          key={id}
+          id={'carousel-' + id}
+          className='carousel slide'
+          data-ride='carousel'>
           <div className='carousel-inner' role='listbox'>
             {pics}
           </div>
@@ -46,27 +50,30 @@ export class BarList extends React.Component {
             href={'#carousel-' + id}
             role='button'
             data-slide='next'>
-            <span className='glyphicon glyphicon-chevron-right' aria-hidden='true' />
+            <span className='glyphicon glyphicon-chevron-right' aria-hidden='true'/>
             <span className='sr-only'>Next</span>
           </a>
         </div>
       );
       return carousel
         ? wrapper
-        : <div />;
+        : <div/>;
     } catch (e) {
       return;
     }
   }
   listBars() {
-    let {bars, photos, dispatch, headcounts, user: {auth}} = this.props;
+    let {bars, photos, dispatch, headcounts, user: {
+        auth
+      }} = this.props;
     bars.map((bar) => {
-      if(headcounts[bar.id] === undefined) {
+      if (headcounts[bar.id] === undefined) {
         let request = {
           url: `/api/headcount${bar.id}`,
-          method: 'GET',
+          method: 'GET'
         };
-        $.ajax(request)
+        $
+          .ajax(request)
           .done((res) => {
             dispatch(actions.storeHeadcounts(bar.id, res.headcount));
           })
@@ -91,15 +98,20 @@ export class BarList extends React.Component {
                 style={{
                   float: 'left'
                 }}>
-                <button
-                  onClick={auth ? this
-                    .toggleMe
-                    .bind(this, bar.id) : null}
-                  href={auth ? '#' : '/auth/twitter'}
-                  className='attending'>{headcounts[bar.id] + ' Going Tonight'}</button>
+                <a href={auth
+                  ? '#'
+                : 'auth/twitter'}>
+                  <button
+                    onClick={auth
+                      ? this
+                      .toggleMe
+                      .bind(this, bar.id)
+                    : null}
+                    className='attending'>{headcounts[bar.id] + ' Going Tonight'}</button>
+                </a>
               </div>
             </div>
-            <br />
+            <br/>
             <p>
               {bar
                 .location
@@ -120,29 +132,28 @@ export class BarList extends React.Component {
     }
     if (count > 0) {
       let {prefix, suffix} = items[0];
-      return (<img src={prefix + '300x200' + suffix} />);
+      return (<img src={prefix + '300x200' + suffix}/>);
     } else {
-      return <div />;
+      return <div/>;
     }
     /*eslint-enable no-var*/
   }
   toggleMe(foursquareId) {
     let {dispatch, user} = this.props;
     if (!user.auth) {
-      $.get('/auth/twitter').then(() => {
-        $.get('/api/me').then((user) => {
-          dispatch(actions.loginUser(user));
+      $
+        .get('/auth/twitter')
+        .then(() => {
         });
-      });
     }
     let request = {
       url: `/api/headcount${foursquareId}`,
       method: 'POST',
       headers: {
-        'Content-type': 'application/json',
+        'Content-type': 'application/json'
       },
       dataType: 'json',
-      data: JSON.stringify({_id: user._id}),
+      data: JSON.stringify({_id: user._id})
     };
     console.log('POST data: ', request.data);
     $
@@ -166,11 +177,11 @@ BarList.propTypes = {
   dispatch: React.PropTypes.func,
   photos: React.PropTypes.object,
   headcounts: React.PropTypes.object,
-  user: React.PropTypes.object,
+  user: React.PropTypes.object
 };
 
 BarList.defaultProps = {
-  bars: [],
+  bars: []
 };
 
 export default connect((state) => state)(BarList);

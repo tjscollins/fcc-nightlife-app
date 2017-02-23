@@ -16,6 +16,7 @@ const storeHeadcounts = (foursquareId, count) => {
 };
 
 module.exports = {
+  loginUser,
   storeBarList,
   storeHeadcounts,
   storePhotos,

@@ -6,6 +6,8 @@ import {connect} from 'react-redux';
 /*----------Components----------*/
 import BarList from 'BarList';
 
+import * as actions from 'actions';
+
 import {storeBarList, storePhotos} from 'actions';
 
 /*eslint-disable require-jsdoc*/
@@ -44,6 +46,12 @@ export class Index extends React.Component {
       });
   }
   render() {
+    let {dispatch, user: {auth}} = this.props;
+    console.log($
+      .get('/api/me').then((arg) => {
+        console.log('/api/me response', arg);
+        if(!auth) dispatch(actions.loginUser(arg));
+      }));
     return (
       <div>
         <div className='container title-box'>
@@ -75,5 +83,10 @@ export class Index extends React.Component {
     );
   }
 }
+
+Index.propTypes = {
+  dispatch: React.PropTypes.func,
+  user: React.PropTypes.object,
+};
 
 export default connect((state) => state)(Index);

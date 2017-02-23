@@ -145,7 +145,7 @@ module.exports = function(app, passport) {
     .route('/auth/twitter/callback')
     .get(passport.authenticate('twitter', {
       successRedirect: '/',
-      failureRedirect: '/',
+      failureRedirect: '/login',
     }));
 
   // app   .route('/auth/github')   .get(passport.authenticate('github'));
