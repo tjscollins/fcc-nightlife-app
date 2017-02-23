@@ -110,6 +110,7 @@ module.exports = function(app, passport) {
     .post(isLoggedIn, (req, res) => {
       let {foursquareId} = req.params;
       let {_id} = req.body;
+      console.log('_id', _id);
       Venue
         .findOne({foursquareId})
         .then((venue) => {
@@ -118,13 +119,15 @@ module.exports = function(app, passport) {
             .filter((entry, i) => {
               return entry[0] !== _id;
             });
+          console.log('headcount', headcount);
           if (headcount.length === venue.headcount.length) {
             venue
               .headcount
               .push([_id, new Date]);
           } else {
-            venue.headcount = headcount;
+            venue.headcount = headcount || [];
           }
+          console.log('venue.headcount', venue.headcount);
           venue.save();
           res.send({headcount: venue.headcount.length});
         });

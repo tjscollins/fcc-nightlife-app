@@ -50,7 +50,7 @@ export class Index extends React.Component {
     if(auth === undefined) console.log($
       .get('/api/me').then((arg) => {
         console.log('/api/me response', arg);
-        dispatch(actions.loginUser(arg));
+        if(arg._id !== undefined) dispatch(actions.loginUser(arg));
       }));
     return (
       <div>
