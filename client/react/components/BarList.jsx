@@ -28,7 +28,7 @@ export class BarList extends React.Component {
         );
       });
       let wrapper = (
-        <div id={'carousel-' + id} className='carousel slide' data-ride='carousel'>
+        <div key={id} id={'carousel-' + id} className='carousel slide' data-ride='carousel'>
           <div className='carousel-inner' role='listbox'>
             {pics}
           </div>
@@ -92,9 +92,9 @@ export class BarList extends React.Component {
                   float: 'left'
                 }}>
                 <button
-                  onClick={auth ? '': this
+                  onClick={auth ? this
                     .toggleMe
-                    .bind(this, bar.id)}
+                    .bind(this, bar.id) : null}
                   href={auth ? '#' : '/auth/twitter'}
                   className='attending'>{headcounts[bar.id] + ' Going Tonight'}</button>
               </div>
