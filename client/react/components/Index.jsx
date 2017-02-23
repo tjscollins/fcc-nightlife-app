@@ -47,10 +47,10 @@ export class Index extends React.Component {
   }
   render() {
     let {dispatch, user: {auth}} = this.props;
-    console.log($
+    if(auth === undefined) console.log($
       .get('/api/me').then((arg) => {
         console.log('/api/me response', arg);
-        if(!auth) dispatch(actions.loginUser(arg));
+        dispatch(actions.loginUser(arg));
       }));
     return (
       <div>
