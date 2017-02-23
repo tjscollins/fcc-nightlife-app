@@ -59,7 +59,7 @@ export class BarList extends React.Component {
     }
   }
   listBars() {
-    let {bars, photos, dispatch, headcounts} = this.props;
+    let {bars, photos, dispatch, headcounts, user: {auth}} = this.props;
     bars.map((bar) => {
       if(headcounts[bar.id] === undefined) {
         let request = {
@@ -92,9 +92,10 @@ export class BarList extends React.Component {
                   float: 'left'
                 }}>
                 <button
-                  onClick={this
+                  onClick={auth ? '': this
                     .toggleMe
                     .bind(this, bar.id)}
+                  href={auth ? '#' : '/auth/twitter'}
                   className='attending'>{headcounts[bar.id] + ' Going Tonight'}</button>
               </div>
             </div>
@@ -128,8 +129,8 @@ export class BarList extends React.Component {
   toggleMe(foursquareId) {
     let {dispatch, user} = this.props;
     if (!user.auth) {
-      $.get('/auth/twitter').done(() => {
-        $.get('/api/me').done((user) => {
+      $.get('/auth/twitter').then(() => {
+        $.get('/api/me').then((user) => {
           dispatch(actions.loginUser(user));
         });
       });
