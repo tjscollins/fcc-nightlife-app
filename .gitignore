@@ -1,3 +1,5 @@
-node_modules/
-.eslintrc
 .env
+.eslintrc
+
+node_modules/
+coverage/

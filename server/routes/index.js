@@ -107,7 +107,7 @@ module.exports = function(app, passport) {
         })
         .catch((error) => console.log);
     })
-    .post(isLoggedIn, (req, res) => {
+    .post((req, res) => {
       let {foursquareId} = req.params;
       let {_id} = req.body;
       console.log('_id', _id);
