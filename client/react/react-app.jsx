@@ -13,8 +13,16 @@ import Login from 'Login';
 import RouteContainer from 'RouteContainer';
 import Profile from 'Profile';
 
+let bars = [];
+let photos = {};
+try {
+  bars = [...JSON.parse(localStorage.getItem('bars'))];
+  photos = {...JSON.parse(localStorage.getItem('photos'))};
+} catch (e) {
+  console.log(e);
+}
 
-const store = configureStore({bars: [], photos: {}, headcounts: {}, user: {}});
+const store = configureStore({bars, photos, headcounts: {}, user: {}});
 
 /**
  * Component Class to Route within SPA

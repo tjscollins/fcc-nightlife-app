@@ -63,14 +63,20 @@ export class BarList extends React.Component {
     }
   }
   listBars() {
-    let {bars, photos, dispatch, headcounts, user: {
+    let {
+      bars,
+      photos,
+      dispatch,
+      headcounts,
+      user: {
         auth
-      }} = this.props;
+      },
+    } = this.props;
     bars.map((bar) => {
       if (headcounts[bar.id] === undefined) {
         let request = {
           url: `/api/headcount${bar.id}`,
-          method: 'GET'
+          method: 'GET',
         };
         $
           .ajax(request)
@@ -96,14 +102,14 @@ export class BarList extends React.Component {
               <div
                 className='col-xs-6'
                 style={{
-                  float: 'left'
-                }}>
+                float: 'left'
+              }}>
                 <a href={auth
                   ? '#'
-                : 'auth/twitter'}>
+                  : 'auth/twitter'}>
                   <button
                     onClick={auth
-                      ? this
+                    ? this
                       .toggleMe
                       .bind(this, bar.id)
                     : null}
@@ -126,12 +132,12 @@ export class BarList extends React.Component {
   renderPhotos(id) {
     /*eslint-disable no-var*/
     if (this.props.photos[id]) {
-      var {items, count} = this.props.photos[id];
+      var {items, count,} = this.props.photos[id];
     } else {
       var count = 0;
     }
     if (count > 0) {
-      let {prefix, suffix} = items[0];
+      let {prefix, suffix,} = items[0];
       return (<img src={prefix + '300x200' + suffix}/>);
     } else {
       return <div/>;
@@ -141,10 +147,7 @@ export class BarList extends React.Component {
   toggleMe(foursquareId) {
     let {dispatch, user} = this.props;
     if (!user.auth) {
-      $
-        .get('/auth/twitter')
-        .then(() => {
-        });
+      setTimeout($.get().bind(null, '/auth/twitter'), 100);
     }
     let request = {
       url: `/api/headcount${foursquareId}`,
@@ -164,6 +167,9 @@ export class BarList extends React.Component {
       });
   }
   render() {
+    let {bars, photos} = this.props;
+    localStorage.setItem('bars', JSON.stringify(bars));
+    localStorage.setItem('photos', JSON.stringify(photos));
     return (
       <div className='container barlist'>
         {this.listBars()}
@@ -177,7 +183,7 @@ BarList.propTypes = {
   dispatch: React.PropTypes.func,
   photos: React.PropTypes.object,
   headcounts: React.PropTypes.object,
-  user: React.PropTypes.object
+  user: React.PropTypes.object,
 };
 
 BarList.defaultProps = {

@@ -47,11 +47,12 @@ export class Index extends React.Component {
   }
   render() {
     let {dispatch, user: {auth}} = this.props;
-    if(auth === undefined) console.log($
-      .get('/api/me').then((arg) => {
-        console.log('/api/me response', arg);
+    if(auth === undefined)
+      $
+        .get('/api/me').then((arg) => {
+        // console.log('/api/me response', arg);
         if(arg._id !== undefined) dispatch(actions.loginUser(arg));
-      }));
+      });
     return (
       <div>
         <div className='container title-box'>
